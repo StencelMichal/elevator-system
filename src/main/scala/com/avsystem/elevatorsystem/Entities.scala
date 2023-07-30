@@ -18,14 +18,16 @@ object Entities {
 
   case class Floor(floorNumber: Int) extends AnyVal {
     def getDirectionTo(nextFloor: Floor): Direction = if (nextFloor.floorNumber > floorNumber) Up else Down
-    def distance(other: Floor): Int                 = abs(floorNumber - other.floorNumber)
-    def higherFrom(other: Floor): Boolean           = floorNumber > other.floorNumber
-    def higherOrEqualFrom(other: Floor): Boolean    = floorNumber >= other.floorNumber
-    def lowerFrom(other: Floor): Boolean            = floorNumber < other.floorNumber
-    def lowerOrEqualFrom(other: Floor): Boolean     = floorNumber <= other.floorNumber
+    def distance(other: Floor): Int = abs(floorNumber - other.floorNumber)
+    def >(other: Floor): Boolean = floorNumber > other.floorNumber
+    def >=(other: Floor): Boolean = floorNumber >= other.floorNumber
+    def <(other: Floor): Boolean = floorNumber < other.floorNumber
+    def <=(other: Floor): Boolean = floorNumber <= other.floorNumber
+    def + (numberOfFloors:Int):Floor = Floor(floorNumber + numberOfFloors)
+    def - (numberOfFloors:Int):Floor = Floor(floorNumber - numberOfFloors)
   }
   object Floor{
-    implicit val ordering: Ordering[Floor] = Ordering.fromLessThan((f1, f2) => f1.lowerFrom(f2))
+    implicit val ordering: Ordering[Floor] = Ordering.fromLessThan((f1, f2) => f1.<(f2))
   }
 
   sealed trait Movement {

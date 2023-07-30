@@ -13,11 +13,11 @@ object ElevatorCallAlgorithm {
     elevatorState.movement match {
       case Inactive =>
         elevatorState.floor.distance(requestedFloor)
-      case GoingUp if requestedDirection == Up && elevatorState.floor.lowerOrEqualFrom(requestedFloor) =>
+      case GoingUp if requestedDirection == Up && elevatorState.floor.<=(requestedFloor) =>
         elevatorState.floor.distance(requestedFloor)
       case GoingUp =>
         elevatorState.floorsToVisit.max.distance(requestedFloor)
-      case GoingDown if requestedDirection == Down && elevatorState.floor.higherOrEqualFrom(requestedFloor) =>
+      case GoingDown if requestedDirection == Down && elevatorState.floor.>=(requestedFloor) =>
         elevatorState.floor.distance(requestedFloor)
       case GoingDown =>
         elevatorState.floorsToVisit.min.distance(requestedFloor)
