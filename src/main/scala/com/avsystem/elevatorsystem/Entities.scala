@@ -5,7 +5,7 @@ import scala.math.abs
 
 object Entities {
 
-  case class Elevator(id: ElevatorId, defaultFloor: Int, minFloor: Floor, maxFloor: Floor)
+  case class Elevator(id: ElevatorId, defaultFloor: Floor, minFloor: Floor, maxFloor: Floor)
 
   case class ElevatorStateSnapshot(
       elevatorId: ElevatorId,

@@ -16,7 +16,7 @@ class CommandLineDispatcher(val simulationEngine: SimulationEngine) {
     case PerformStepRequest                                         => performSimulationStep
     case GetStatusRequest                                           => getStatus
     case UpdateStateRequest(elevatorId, newFloor, newFloorsToVisit) => updateState(elevatorId, newFloor, newFloorsToVisit)
-    case _                                                          => throw ApplicationException(s"CommandLineDispatcher cannot handle $request")
+    case _                                                          => throw new ApplicationException(s"CommandLineDispatcher cannot handle $request")
   }
 
   private def callElevator(requestedFloor: Floor, requestedDirection: Direction): Future[ElevatorPickupResponse] =

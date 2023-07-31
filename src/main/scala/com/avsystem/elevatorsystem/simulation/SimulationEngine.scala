@@ -4,20 +4,20 @@ import com.avsystem.elevatorsystem.Entities._
 
 class SimulationEngine (simulationState: SimulationState){
 
-  def fetchSimulationSnapshot(): List[ElevatorStateSnapshot] = simulationState.elevatorStates.map {
-    case (id, state) => toElevatorStateSnapshot(id, state)
+  def fetchSimulationSnapshot(): List[ElevatorStateSnapshot] = simulationState.elevatorSimulationsById.map {
+    case (id, elevatorSimulation) => toElevatorStateSnapshot(id, elevatorSimulation.state)
   }.toList
 
   def performSimulationStep(): Unit =
-    SimulationUpdater.performSimulationStep(simulationState.elevators, simulationState.elevatorStates)
+    SimulationUpdater.performSimulationStep(simulationState)
 
   def assignTaskToElevator(elevatorId: ElevatorId, requestedFloor:Floor): Unit = {
     //TODO validation
-    simulationState.elevatorStates(elevatorId).floorsToVisit += requestedFloor
+    simulationState.elevatorSimulationsById(elevatorId).state.floorsToVisit += requestedFloor
   }
 
   def updateState(elevatorId: ElevatorId, newFloor: Floor, newFloorsToVisit: Set[Floor]): ElevatorStateSnapshot = {
-    val elevatorState = simulationState.elevatorStates(elevatorId)
+    val elevatorState = simulationState.elevatorSimulationsById(elevatorId).state
     elevatorState.floor = newFloor
     elevatorState.floorsToVisit = newFloorsToVisit
     toElevatorStateSnapshot(elevatorId, elevatorState)

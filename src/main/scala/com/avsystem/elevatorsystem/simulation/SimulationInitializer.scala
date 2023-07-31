@@ -1,7 +1,7 @@
 package com.avsystem.elevatorsystem.simulation
 
 import com.avsystem.elevatorsystem.ConfigurationParser.{ElevatorSpecification, ElevatorsConfig}
-import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId}
+import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId, Floor}
 
 import scala.annotation.tailrec
 
@@ -34,7 +34,7 @@ object SimulationInitializer {
   private def createFromSpecification(id:Int, specification: ElevatorSpecification): Elevator =
     Elevator(
       ElevatorId(id),
-      defaultFloor = specification.defaultFloor,
+      defaultFloor = Floor(specification.defaultFloor),
       minFloor = specification.minFloor,
       maxFloor = specification.maxFloor
     )
