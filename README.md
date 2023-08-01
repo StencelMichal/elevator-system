@@ -14,7 +14,7 @@
 ## Elevator Algorithm:
 Elevators are assigned using greedy algorithm which calculates the shortest "distance" to a given floor and the direction of travel at the time of the request.
 
-Calculating the distance:
+**Cases**:
 * The elevator is inactive or traveling in the same direction as the request but is still before the requested floor.
 
   Distance is the number of floors between the current position of the elevator and the requested floor.

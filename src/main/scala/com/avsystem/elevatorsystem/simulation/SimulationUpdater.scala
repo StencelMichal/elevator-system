@@ -2,7 +2,7 @@ package com.avsystem.elevatorsystem.simulation
 
 import com.avsystem.elevatorsystem.Entities._
 import com.avsystem.elevatorsystem.Exceptions.ApplicationException
-import com.avsystem.elevatorsystem.simulation.UpdateStateValidations.{validateMoveDownward, validateMoveUpward}
+import com.avsystem.elevatorsystem.simulation.UpdateStateValidations.validateMove
 import com.avsystem.elevatorsystem.util.Logging
 
 import scala.util.Try
@@ -15,7 +15,7 @@ object SimulationUpdater extends Logging {
         setDirectionIfInactiveWithTask(elevatorSimulation)
         moveElevator(elevatorSimulation)
         checkIfReachedDestination(elevatorSimulation.state)
-      }).recover { case _: ApplicationException =>
+      }).recover { case _: Throwable =>
         directElevatorToDefaultFloor(elevatorSimulation)
       }
     }
@@ -35,11 +35,11 @@ object SimulationUpdater extends Logging {
     state.movement match {
       case GoingUp =>
         val nextFloor = state.floor + 1
-        validateMoveUpward(elevator, nextFloor)
+        validateMove(elevator, nextFloor)
         state.floor = nextFloor
       case GoingDown =>
         val nextFloor = state.floor - 1
-        validateMoveDownward(elevator, nextFloor)
+        validateMove(elevator, nextFloor)
         state.floor = nextFloor
       case Idle =>
     }

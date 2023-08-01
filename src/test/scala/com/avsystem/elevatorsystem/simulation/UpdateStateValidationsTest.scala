@@ -14,7 +14,7 @@ class UpdateStateValidationsTest extends AnyFlatSpecLike {
     val minFloor     = Floor(1)
     val elevator     = Elevator(ElevatorId(1), defaultFloor, minFloor, maxFloor)
     an[IllegalStateUpdateException] shouldBe thrownBy {
-      UpdateStateValidations.validateMoveUpward(elevator, nextFloor)
+      UpdateStateValidations.validateMove(elevator, nextFloor)
     }
   }
 
@@ -25,7 +25,7 @@ class UpdateStateValidationsTest extends AnyFlatSpecLike {
     val nextFloor = Floor(0)
     val elevator = Elevator(ElevatorId(1), defaultFloor, minFloor, maxFloor)
     an[IllegalStateUpdateException] shouldBe thrownBy {
-      UpdateStateValidations.validateMoveDownward(elevator, nextFloor)
+      UpdateStateValidations.validateMove(elevator, nextFloor)
     }
   }
 

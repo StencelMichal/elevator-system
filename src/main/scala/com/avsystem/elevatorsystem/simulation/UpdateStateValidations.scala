@@ -1,26 +1,23 @@
 package com.avsystem.elevatorsystem.simulation
 
 import com.avsystem.elevatorsystem.Entities.{Elevator, Floor}
-import com.avsystem.elevatorsystem.Exceptions.ApplicationException
+import com.avsystem.elevatorsystem.Exceptions.{ApplicationException, UserException}
 import com.avsystem.elevatorsystem.util.Logging
 
 private[simulation] object UpdateStateValidations extends Logging {
 
-  private[simulation] case class IllegalStateUpdateException(message: String) extends ApplicationException(message)
+  private[simulation] case class IllegalStateUpdateException(message: String) extends UserException(message)
 
-  def validateMoveUpward(elevator: Elevator, nextFloor: Floor): Unit = {
-    if (elevator.maxFloor < nextFloor) {
-      val errorMsg = s"elevator ${elevator.id} could not be moved upward to $nextFloor floor," +
-        s" because it reached its max floor ${elevator.maxFloor}"
+  def validateMove(elevator: Elevator, floor: Floor): Unit = {
+    if (elevator.maxFloor < floor) {
+      val errorMsg = s"elevator ${elevator.id} could not be moved upward to $floor floor," +
+        s" because it's max floor is ${elevator.maxFloor}"
       log.warn(errorMsg)
       throw IllegalStateUpdateException(errorMsg)
     }
-  }
-
-  def validateMoveDownward(elevator: Elevator, nextFloor: Floor): Unit = {
-    if (elevator.minFloor > nextFloor) {
-      val errorMsg = s"elevator ${elevator.id} could not be moved downward to $nextFloor floor," +
-        s" because it reached its min floor ${elevator.minFloor}"
+    if (elevator.minFloor > floor) {
+      val errorMsg = s"elevator ${elevator.id} could not be moved downward to $floor floor," +
+        s" because it's min floor is ${elevator.minFloor}"
       log.warn(errorMsg)
       throw IllegalStateUpdateException(errorMsg)
     }
