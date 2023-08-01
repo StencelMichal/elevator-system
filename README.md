@@ -37,6 +37,10 @@ The project is built using SBT. To run, type:
 
 `sbt run`
 
+If you don't have SBT installed run
+
+`sbtx run`
+
 ## Interaction
 The system can be controlled by entering commands in the terminal.
 List of available commands:
