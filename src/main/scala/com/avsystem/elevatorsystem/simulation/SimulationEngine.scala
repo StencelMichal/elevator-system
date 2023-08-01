@@ -16,7 +16,7 @@ class SimulationEngine (simulationState: SimulationState){
     simulationState.elevatorSimulationsById(elevatorId).state.floorsToVisit += requestedFloor
   }
 
-  def updateState(elevatorId: ElevatorId, newFloor: Floor, newFloorsToVisit: Set[Floor]): ElevatorStateSnapshot = {
+  def updateState(elevatorId: ElevatorId, newFloor: Floor, newFloorsToVisit: Set[Floor]): ElevatorStateSnapshot = synchronized {
     val elevatorState = simulationState.elevatorSimulationsById(elevatorId).state
     elevatorState.floor = newFloor
     elevatorState.floorsToVisit = newFloorsToVisit

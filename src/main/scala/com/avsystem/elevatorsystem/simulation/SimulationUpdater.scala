@@ -11,11 +11,11 @@ object SimulationUpdater extends Logging {
 
   private[simulation] def performSimulationStep(simulationState: SimulationState): Unit =
     simulationState.elevatorSimulationsById.values.foreach { elevatorSimulation =>
-      Try {
+      Try(synchronized {
         setDirectionIfInactiveWithTask(elevatorSimulation)
         moveElevator(elevatorSimulation)
         checkIfReachedDestination(elevatorSimulation.state)
-      }.recover { case _: ApplicationException =>
+      }).recover { case _: ApplicationException =>
         directElevatorToDefaultFloor(elevatorSimulation)
       }
     }
