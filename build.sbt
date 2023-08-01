@@ -9,6 +9,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++=
       Seq(
         ProductionDependencies.config,
+        ProductionDependencies.logback,
 
         TestDependencies.munit,
         TestDependencies.scalatest
