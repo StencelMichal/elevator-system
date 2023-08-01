@@ -26,7 +26,10 @@ object StatusPrinter extends CommandLinePrinter {
 
   private def appendElevatorStatus(sb: StringBuilder, elevatorSnapshot: ElevatorStateSnapshot): Unit = {
     sb.append('\n')
-    appendElement(sb, "elevatorId", elevatorSnapshot.elevatorId.id)
+    appendElement(sb, "elevatorId", elevatorSnapshot.elevator.id.id)
+    appendElement(sb, "minFloor", elevatorSnapshot.elevator.minFloor.floorNumber)
+    appendElement(sb, "maxFloor", elevatorSnapshot.elevator.maxFloor.floorNumber)
+    appendElement(sb, "defaultFloor", elevatorSnapshot.elevator.defaultFloor.floorNumber)
     appendElement(sb, "currentFloor", elevatorSnapshot.floor.floorNumber)
     appendElement(sb, "movingDirection", elevatorSnapshot.movement)
     appendElement(sb, "floorsToVisit", elevatorSnapshot.floorsToVisit.map(_.floorNumber).mkString("[", ",", "]"))

@@ -5,10 +5,12 @@ import scala.math.abs
 
 object Entities {
 
-  case class Elevator(id: ElevatorId, defaultFloor: Floor, minFloor: Floor, maxFloor: Floor)
+  case class Elevator(id: ElevatorId, defaultFloor: Floor, minFloor: Floor, maxFloor: Floor){
+    def hasFloorInRange(floor:Floor): Boolean = minFloor <= floor && floor <= maxFloor
+  }
 
   case class ElevatorStateSnapshot(
-      elevatorId: ElevatorId,
+      elevator: Elevator,
       floor: Floor,
       movement: Movement,
       floorsToVisit: Set[Floor]

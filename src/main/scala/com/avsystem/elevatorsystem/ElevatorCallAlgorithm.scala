@@ -2,12 +2,17 @@ package com.avsystem.elevatorsystem
 
 import com.avsystem.elevatorsystem.Entities._
 
-import scala.math.abs
-
 object ElevatorCallAlgorithm {
 
-  def findElevatorToCall(requestedFloor:Floor, requestedDirection:Direction, elevatorsStates:List[ElevatorStateSnapshot]): ElevatorId =
-    elevatorsStates.minBy(state => distanceToCaller(requestedFloor, requestedDirection, state)).elevatorId
+  def findElevatorToCall(
+      requestedFloor: Floor,
+      requestedDirection: Direction,
+      snapshots: List[ElevatorStateSnapshot]
+  ): Option[ElevatorId] = {
+    val elevatorsAbleToHandleRequest = snapshots.filter(_.elevator.hasFloorInRange(requestedFloor))
+    val optElevatorId                = elevatorsAbleToHandleRequest.minByOption(state => distanceToCaller(requestedFloor, requestedDirection, state))
+    optElevatorId.map(_.elevator.id)
+  }
 
   private def distanceToCaller(requestedFloor: Floor, requestedDirection: Direction, elevatorState: ElevatorStateSnapshot): Int =
     elevatorState.movement match {
@@ -23,26 +28,4 @@ object ElevatorCallAlgorithm {
         elevatorState.floorsToVisit.min.distance(requestedFloor)
     }
 
-//  def findElevatorToCall(requestedFloor:Floor, requestedDirection:Direction, elevatorsStates:List[ElevatorStateSnapshot]): ElevatorId = {
-//
-//    val inactiveElevatorOnRequestedFloor = elevatorsStates.find(state =>
-//      state.floor == requestedFloor && state.movement == Inactive
-//    )
-//
-//
-//    val closestInactiveElevatorOrGoingSameDirection = {
-//      val inactiveElevators = elevatorsStates.filter(_.movement == Inactive)
-//      val elevatorsWithSameDirection = elevatorsStates.filter(state => requestedDirection match {
-//        case Up => state.movement == GoingUp && state.floor.floorNumber <= requestedFloor.floorNumber
-//        case Down => state.movement == GoingDown && state.floor.floorNumber >= requestedFloor.floorNumber
-//      }
-//      )
-//      (inactiveElevators ::: elevatorsWithSameDirection).minByOption(state => {
-//        abs(state.floor.floorNumber - requestedFloor.floorNumber)
-//      })
-//    }
-//
-//    //TODO winda która będzie najszybciej w stanie obsłużyć, po zrobieniu aktualnych zadań
-//    inactiveElevatorOnRequestedFloor.orElse(closestInactiveElevatorOrGoingSameDirection).get.elevatorId
-//  }
 }

@@ -4,11 +4,12 @@ import com.avsystem.elevatorsystem.Entities.{Direction, ElevatorId, Floor}
 import com.avsystem.elevatorsystem.cli.CommandLineOperations._
 import com.avsystem.elevatorsystem.cli.RequestResponse._
 import com.avsystem.elevatorsystem.cli.printer.SystemMessagePrinter
+import com.avsystem.elevatorsystem.util.Logging
 
 import scala.io.StdIn.readLine
 import scala.util.Try
 
-object InputInterpreter {
+object InputInterpreter extends Logging {
 
   private val welcomingMessage = "Type commands to operate elevator system. For a list of all commands, type `help`"
   private val emptyInputRegex  = """\s*""".r
@@ -20,7 +21,10 @@ object InputInterpreter {
       Try(input match {
         case PickupElevatorCommand.regex(floorNumber, direction) =>
           PickupElevatorCommand.performOperation(
-            ElevatorPickupRequest(Floor(floorNumber.toInt), Direction.fromString(direction.toLowerCase.capitalize))
+            ElevatorPickupRequest(
+              floor = Floor(floorNumber.toInt),
+              direction = Direction.fromString(direction.toLowerCase.capitalize)
+            )
           )
         case PerformStepCommand.regex() =>
           PerformStepCommand.performOperation(PerformStepRequest)
@@ -28,7 +32,11 @@ object InputInterpreter {
           GetStatusCommand.performOperation(GetStatusRequest)
         case UpdateStateCommand.regex(elevatorId, newFloor, newFloorsToVisit) =>
           UpdateStateCommand.performOperation(
-            UpdateStateRequest(ElevatorId(elevatorId.toInt), Floor(newFloor.toInt), newFloorsToVisit.split("\\s+").map(floorNumber => Floor(floorNumber.toInt)).toSet)
+            UpdateStateRequest(
+              elevatorId = ElevatorId(elevatorId.toInt),
+              newFloor = Floor(newFloor.toInt),
+              newFloorsToVisit = newFloorsToVisit.split("\\s+").map(floorNumber => Floor(floorNumber.toInt)).toSet
+            )
           )
         case HelpCommand.regex() =>
           HelpCommand.showHelp()
@@ -42,8 +50,8 @@ object InputInterpreter {
   }
 
   private def onError(t: Throwable): Unit = {
+    log.warn(s"Cannot parse input, reason: $t")
     SystemMessagePrinter.printSystemMessage("Unparsable input. For all possible operations type `help`")
-    //TODO log error
   }
 
 }

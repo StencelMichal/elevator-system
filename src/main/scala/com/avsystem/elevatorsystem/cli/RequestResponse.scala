@@ -8,7 +8,7 @@ object RequestResponse {
   sealed trait Response
 
   case class ElevatorPickupRequest(floor: Floor, direction: Direction) extends Request
-  case class ElevatorPickupResponse(elevatorId: ElevatorId) extends Response
+  case class ElevatorPickupResponse(elevatorId: Option[ElevatorId]) extends Response
 
   case object PerformStepRequest extends Request
   case object PerformStepResponse extends Response

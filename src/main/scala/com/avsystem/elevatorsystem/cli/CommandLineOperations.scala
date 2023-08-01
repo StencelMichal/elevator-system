@@ -14,8 +14,13 @@ object CommandLineOperations {
 
   case object PickupElevatorCommand extends Command with CallbackOperation[ElevatorPickupRequest, ElevatorPickupResponse] {
     override val regex: Regex = pickupElevatorRegex
-    override val callback: ElevatorPickupResponse => Unit = response =>
-      SystemMessagePrinter.printSystemMessage(s"Elevator: ${response.elevatorId.id} called")
+    override val callback: ElevatorPickupResponse => Unit = response => {
+      val message = response.elevatorId match {
+        case Some(elevatorId) => s"Elevator: ${elevatorId.id} called"
+        case None => "No elevator is able to handle pickup request"
+      }
+      SystemMessagePrinter.printSystemMessage(message)
+    }
     override val name: String        = "pickup"
     override val description: String = "Calls an elevator to a specific floor with the intention of traveling in a particular direction"
     override val example: String     = "pickup 3 down"

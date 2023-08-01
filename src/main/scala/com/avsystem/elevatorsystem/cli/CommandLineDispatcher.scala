@@ -21,10 +21,13 @@ class CommandLineDispatcher(val simulationEngine: SimulationEngine) {
 
   private def callElevator(requestedFloor: Floor, requestedDirection: Direction): Future[ElevatorPickupResponse] =
     Future {
-      val snapshot   = simulationEngine.fetchSimulationSnapshot()
-      val elevatorId = ElevatorCallAlgorithm.findElevatorToCall(requestedFloor, requestedDirection, snapshot)
-      simulationEngine.assignTaskToElevator(elevatorId, requestedFloor)
-      ElevatorPickupResponse(elevatorId)
+      val snapshot   = simulationEngine.fetchSimulationSnapshot
+      val optElevatorId = ElevatorCallAlgorithm.findElevatorToCall(requestedFloor, requestedDirection, snapshot)
+      optElevatorId match {
+        case Some(elevatorId) => simulationEngine.assignTaskToElevator(elevatorId, requestedFloor)
+        case None =>
+      }
+      ElevatorPickupResponse(optElevatorId)
     }
 
   private def performSimulationStep: Future[PerformStepResponse.type] =
@@ -35,7 +38,7 @@ class CommandLineDispatcher(val simulationEngine: SimulationEngine) {
 
   private def getStatus: Future[GetStatusResponse] =
     Future {
-      val snapshots = simulationEngine.fetchSimulationSnapshot()
+      val snapshots = simulationEngine.fetchSimulationSnapshot
       GetStatusResponse(snapshots)
     }
 
