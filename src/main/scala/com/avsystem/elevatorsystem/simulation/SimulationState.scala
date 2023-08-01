@@ -1,6 +1,6 @@
 package com.avsystem.elevatorsystem.simulation
 
-import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId, ElevatorStateSnapshot, Floor, Inactive, Movement}
+import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId, ElevatorStateSnapshot, Floor, Idle, Movement}
 
 private[simulation] case class ElevatorSimulation(elevator: Elevator, state: ElevatorState) {
   def toElevatorStateSnapshot: ElevatorStateSnapshot =
@@ -22,7 +22,7 @@ case class SimulationState(elevatorSimulationsById: Map[ElevatorId, ElevatorSimu
 object SimulationState {
   private[simulation] def initialize(elevators: List[Elevator]): SimulationState = {
     val elevatorSimulationsById = elevators.map { elevator =>
-      val state = new ElevatorState(floor = elevator.minFloor, movement = Inactive, floorsToVisit = Set.empty)
+      val state = new ElevatorState(floor = elevator.minFloor, movement = Idle, floorsToVisit = Set.empty)
       elevator.id -> ElevatorSimulation(elevator, state)
     }.toMap
     new SimulationState(elevatorSimulationsById)

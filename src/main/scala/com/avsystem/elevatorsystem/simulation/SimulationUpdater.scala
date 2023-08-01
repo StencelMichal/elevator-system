@@ -22,7 +22,7 @@ object SimulationUpdater extends Logging {
 
   private def setDirectionIfInactiveWithTask(elevatorSimulation: ElevatorSimulation): Unit = {
     val state = elevatorSimulation.state
-    if (state.movement == Inactive && state.floorsToVisit.nonEmpty) {
+    if (state.movement == Idle && state.floorsToVisit.nonEmpty) {
       val nextFloor   = state.floorsToVisit.minBy(_.distance(state.floor))
       val direction   = state.floor.getDirectionTo(nextFloor)
       val newMovement = Movement.fromDirection(direction)
@@ -41,12 +41,12 @@ object SimulationUpdater extends Logging {
         val nextFloor = state.floor - 1
         validateMoveDownward(elevator, nextFloor)
         state.floor = nextFloor
-      case Inactive =>
+      case Idle =>
     }
   }
 
   private def checkIfReachedDestination(state: ElevatorState): Unit = {
-    if (state.movement != Inactive && state.floorsToVisit.contains(state.floor)) {
+    if (state.movement != Idle && state.floorsToVisit.contains(state.floor)) {
       state.floorsToVisit -= state.floor
       state.movement = nextDirectionForElevatorAtDestination(state)
     }
@@ -54,15 +54,15 @@ object SimulationUpdater extends Logging {
 
   private def nextDirectionForElevatorAtDestination(state: ElevatorState): Movement = state.movement match {
     case GoingUp if !state.floorsToVisit.exists(_.>(state.floor)) =>
-      if (state.floorsToVisit.exists(_.<(state.floor))) GoingDown else Inactive
+      if (state.floorsToVisit.exists(_.<(state.floor))) GoingDown else Idle
     case GoingDown if !state.floorsToVisit.exists(_.<(state.floor)) =>
-      if (state.floorsToVisit.exists(_.>(state.floor))) GoingUp else Inactive
+      if (state.floorsToVisit.exists(_.>(state.floor))) GoingUp else Idle
     case other => other
   }
 
   private def directElevatorToDefaultFloor(elevatorSimulation: ElevatorSimulation): Unit = {
     log.info(s"Elevator ${elevatorSimulation.elevator.id} was reset due to error in its state update")
-    elevatorSimulation.state.movement = Inactive
+    elevatorSimulation.state.movement = Idle
     elevatorSimulation.state.floorsToVisit = Set(elevatorSimulation.elevator.defaultFloor)
   }
 

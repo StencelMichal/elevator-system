@@ -1,79 +1,79 @@
-# **System sterowania windami**
+# **Elevator Control System**
 
-## Założenia:
-* Interakcja z systemem odbywa się poprzez interfejs terminalowy
-* W jednym kroku symulacji każda winda pokonuje odległość jednego piętra
-* Winda posiada zakres ruchu - minimalne i maksymalne piętro. W przypadku nie podania w konfiguracji informacji o windzie, zostaną jej ustawione, dostarczone w konfirugacji, wartości domyślne dla systemu
-* Winda posiada zbiór pięter które powinna odwiedzić
-* Winda może znajdować się w 3 stanach
-  * jazda w górę
-  * jazda w dół
-  * bezczynność
-* Ruch windy odbywa się cyklicznie góra dół. Oznacza to, że winda będzie jechać tak długo w aktualnym kierunku, dopóki ma złoszenia na kolejnych piętrach. Dopiero kiedy dotrze do ostatnigo piętra w aktualnym kierunku, pojedzie w drugą stronę lub stanie się bezczynna
+## Assumptions:
+* Interaction with the system is done through a terminal interface.
+* In one simulation step, each elevator moves the distance of one floor.
+* Each elevator has a range of movement - a minimum and maximum floor. If no information about the elevator is provided in the configuration, default values for the system will be set.
+* Each elevator has a set of floors it should visit.
+* The elevator can be in one of three states:
+  * Going up
+  * Going down
+  * Idle
+* Elevator movement is periodic in an up-and-down pattern. This means that the elevator will continue to travel in the current direction until it has pending requests on subsequent floors. Only when it reaches the last floor in the current direction will it change direction or become idle.
 
+## Elevator Algorithm:
+Elevators are assigned using greedy algorithm which calculates the shortest "distance" to a given floor and the direction of travel at the time of the request.
 
-## Algorytm wyboru windy:
-Windy przydzielane są w zachłanny sposób, poprzez wyliczenie najkrótszej "odległości" w do danego piętra i jazdy w określonym kierunku w momencie złgoszenia.
-Liczenie odległości:
-* Winda jest nieaktywna lub jedzie zgodnie z kierunkiem zgłoszenia, ale jest jeszcze przed piętrem zgłaszającego.
- 
-  Odległość to liczba pięter między aktualną pozycją windy, a zgłoszonym piętrem
+Calculating the distance:
+* The elevator is inactive or traveling in the same direction as the request but is still before the requested floor.
 
+  Distance is the number of floors between the current position of the elevator and the requested floor.
 
-* Winda jedzie w przeciwnym kierunku:
-  Odległość to suma:
-  * liczby pięter od aktualnej pozucji do ostatniego piętra w aktualnym kierunku
-  * liczby pięter od ostatniego piętra do zgłaszanego piętra
-  
+* The elevator is traveling in the opposite direction:
 
-* Winda jedzie zgodnie z kierunkiem zgłoszenia, ale minęła już piętro zgłaszającego:
-  Odległość to suma:
-  * liczby pięter do ostatniego zgłoszenia w aktualnym kierunku
-  * liczby pięter od między skrajnymi piętrami w kolejce
-  * liczby pięter od ostatniego piętra w przeciwnym kierunku do piętra zgłaszającego
+  Distance is the sum of:
+  * The number of floors from the current position to the last floor in the current direction.
+  * The number of floors from the last floor to the requested floor.
 
-## Uruchomienie:
-Projekt jest budowany przez SBT. W celu uruchomienia należy wpisać:
+* The elevator is traveling in the same direction as the request, but it has already passed the requesting floor:
+
+  Distance is the sum of:
+  * The number of floors from current position to the last request in the current direction.
+  * The number of floors between the extreme floors in the queue.
+  * The number of floors from the last floor in the opposite direction to the requesting floor.
+
+## Running the Simulation:
+The project is built using SBT. To run, type:
 
 `sbt run`
 
-## Interakcja
-System można kontrolować poprzez wpisywanie komend w terminalu.
-Lista dostępnych komend:
+## Interaction
+The system can be controlled by entering commands in the terminal.
+List of available commands:
 * **pickup:**
-  * description: Calls an elevator to a specific floor with the intention of traveling in a particular direction
-  * parameters:
+  * Description: Calls an elevator to a specific floor with the intention of traveling in a particular direction.
+  * Parameters:
     * [1] floor number
     * [2] elevator direction, possible values are `up` or `down`
-example: `pickup 3 down`
+  * Example: `pickup 3 down`
 * **step:**
-  * description: Performs simulation step
-  * example: `step`
+  * Description: Performs a simulation step.
+  * Example: `step`
 * **status:**
-  * description: Show status of current simulation
-  * example: `status`
+  * Description: Shows the status of the current simulation.
+  * Example: `status`
 * **update:**
-  * description: Updates elevator state of given id
-  * parameters:
-    * [1] elevatorId
+  * Description: Updates the elevator state of the given ID.
+  * Parameters:
+    * [1] elevator id
     * [2] the floor to which the elevator state should be changed
     * [3] whitespace-separated array of floor numbers in square brackets - list of floors to which the elevator should go next
-  * example: `update 3 1 [4 5]`
+  * Example: `update 3 1 [4 5]`
 * **help:**
-  * description: Prints help with all possible commands
-  * example: `help`
+  * Description: Prints help with all possible commands.
+  * Example: `help`
 
-## Dalsze możliwości rozwinięcia systemu
-* Lepsze pokrycie kodu testami. Aktualnie testy sprawdzają poprawność wyznaczania windy, która powinna zostać wybrana przez algorytm. W szczególności potrzebne są testy sprawdzające poprawność odpowiedzi po interakcji użytkownika z systemem.
-* W aktualnej postaci CLI komunikuje się bezpośrednio z symulacją. Należałoby rozdzielić CLI od symulacji poprzez API. Dogodnym do tego miejscem byłby `CommandLineDispatcher`, który powinien wykonywać requesty/delegować wykonanie requestów do symulacji. W ten sposób, mielibyśmy możliwość interakcji z systemem na inny sposoby: GUI, HTTP, Aplikacja webowa... Dzięki temu można by również uruchomić dwie instacje CLI, jedna mogłąby stanowić podgląd live aktualnego stanu symulacji, a druga operować symulacją.
-* Lepsze wykorzystanie logowania. Zdecydowanie powinno się dodać więcej logowania. W szególności po stronie symulacji.
-* Tracing przebiegu requestów.
-* Stworzenie interaktywnej dokumentacji po wystawieniu wszystkich operacji na symulacji do API.
-* Lepsze zarządzanie stanem symulacji. W obecnej postaci stan nie jest wystarczająco dobrze chroniony. Potencjalnie można wyeliminować konieczność stosowania var'ów poprzez wykorzystanie Akki i przetrzymywanie stanu symulacji jako stanu aktora.
-* Powrót windy na domyśle piętro po określonym czasie bezczynności. Aktualnie winda posiada `defaultFloor`, dlatego należałoby dodać zliczanie ilość kroków symulacji bez zmiany stanu windy. Po przekroczeniu konfigurowalnej wartośći winda powinna dostać zgłoszenie powrotu na domyśle piętro. Feature jest o tyle skompikowany, że powinniśmy wprowadzić typowanie tasków dla windy. W ten sposób moglibyśmy anulować powrót windy na domyśle piętro, kiedy dostanie ona jakieś inne zgłosznie.
-* Awaryjne wyłączenie systemu. Należałoby dodać możliwość awaryjnego wyłączenia systemu, które powinno się również samo uruchamiać jako "graceful shutdown" przy wyłączniu systemu. Wszystkie windy w tym momencie powinny przestać przyjmować zgłoszenia i zjechać na najniższe piętro w budynku (należałoby to dodać do konfiguracji)
-* Przemyślenie odpowiedzialności w systemie. Aktualnie wszystkie requesty są ostatecznie obsługiwane przez `SimulationEngine`. Wina to z faktu jak najmniejszego dostępu do mutowalnego stanu symulacji. Należałoby przemyśleć czy jest to dobre podejście.
-* Symulacja live. Można dodać komendę, po wpisaniu której wykonywane byłby okresowo zapytania o stan symulacji i odświeżanie terminala.
-* Lepsze zarządzanie wyjątami. Dobrze byłoby łapać wyjątki spowodowane przez użytkownika, np. podanie piątra poza zakresem bydunku i wyświetlać odpowiednie komunikaty w terminalu
-* Usprawnienie algorytmu wyboru windy. W metryce "odległości" od zgłaszającego można by uwzględniać liczbę przystanków, które winda będzie musiała pokonwać w celu dotarcia do zgłaszającego
-* Okresowe przeliczanie optymalności przydzielonych windzie tasków. Ze względu na zastosowanie zachłannego sposobu wybierania windy, może się okazać, że po kilku krokach symulacji, jest winda, która jest w stanie szybciej obsłużyć nasze zgłoszenie.
+## Further System Enhancements
+* Better test coverage. Currently, tests verify the correctness of selecting the elevator that should be chosen by the algorithm. Specifically, tests verifying the correctness of responses after user interactions with the system are needed.
+* In the current form, the CLI communicates directly with the simulation. It should be separated from the simulation through an API. A suitable place for this could be `CommandLineDispatcher`, which should make requests/delegate request execution to the simulation. This way, we would have the possibility of interacting with the system in other ways: GUI, HTTP, web application, etc. This would also allow us to run two instances of the CLI; one could provide a live view of the current simulation state, while the other operates the simulation.
+* Better use of logging. More logging should be added, especially on the simulation side.
+* Tracing of requests.
+* Creating interactive documentation after exposing all operations on the simulation to the API.
+* Better management of simulation state. In the current form, the state is not well protected enough. Potentially, it is possible to eliminate the need to use var's by using Akka and holding the simulation state as the actor state.
+* Returning the elevator to the default floor after a specified period of inactivity. Currently, the elevator has a `defaultFloor`, so counting the number of simulation steps without changing the elevator's state should be added. After exceeding a configurable value, the elevator should receive a request to return to the default floor. This feature is complex because we need to introduce task typing for the elevator. This way, we could cancel the return to the default floor when it receives another request.
+* Emergency system shutdown. The system should have the ability to shut down in an emergency, which should also be triggered as a graceful shutdown when the system is turned off. All elevators at this point should stop accepting requests and go to the lowest floor in the building (this should be added to the configuration).
+* Rethinking system responsibilities. Currently, all requests are ultimately handled by the `SimulationEngine`. This is due to the desire for the least access to mutable simulation state. It is necessary to consider whether this is a good approach.
+* Live simulation. A command could be added that, when entered, periodically queries the simulation state and refreshes the terminal.
+* Better exception handling. It would be good to catch exceptions caused by the user, such as providing a floor outside the building range, and display appropriate messages in the terminal.
+* Improving the elevator selection algorithm. number of stops that the elevator will have to make to reach the requester could be taken into account int in the "distance" metric.
+* Periodically recalculating the optimality of assigned tasks to the elevator. Due to the use of the greedy way of choosing an elevator, it may turn out that after several simulation steps, there is an elevator that can serve our request faster.

@@ -66,7 +66,7 @@ object CommandLineOperations {
     override val name: String        = "update"
     override val description: String = "Updates elevator state of given id"
     override val parametersDescriptions: List[String] = List(
-      "elevatorId",
+      "elevator id",
       "the floor to which the elevator state should be changed",
       "whitespace-separated array of floor numbers in square brackets - list of floors to which the elevator should go next"
     )

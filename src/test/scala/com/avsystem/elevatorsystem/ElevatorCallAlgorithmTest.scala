@@ -14,9 +14,9 @@ class ElevatorCallAlgorithmTest extends AnyFlatSpecLike with GivenWhenThen with 
 
   it should "pick inactive elevator at requested floor" in {
     Given("inactive elevator on the same floor as requested one")
-    val elevatorState1 = ElevatorStateSnapshot(elevator1, Floor(1), Inactive, Set.empty)
-    val elevatorState2 = ElevatorStateSnapshot(elevator2, Floor(2), Inactive, Set.empty)
-    val elevatorState3 = ElevatorStateSnapshot(elevator3, Floor(3), Inactive, Set.empty)
+    val elevatorState1 = ElevatorStateSnapshot(elevator1, Floor(1), Idle, Set.empty)
+    val elevatorState2 = ElevatorStateSnapshot(elevator2, Floor(2), Idle, Set.empty)
+    val elevatorState3 = ElevatorStateSnapshot(elevator3, Floor(3), Idle, Set.empty)
 
     When("algorithm calculates elevator to call")
     val direction = Up
@@ -30,9 +30,9 @@ class ElevatorCallAlgorithmTest extends AnyFlatSpecLike with GivenWhenThen with 
 
   it should "pick closest inactive elevator" in {
     Given("multiple inactive elevators")
-    val elevatorState1 = ElevatorStateSnapshot(elevator1, Floor(1), Inactive, Set.empty)
-    val elevatorState2 = ElevatorStateSnapshot(elevator2, Floor(4), Inactive, Set.empty)
-    val elevatorState3 = ElevatorStateSnapshot(elevator3, Floor(5), Inactive, Set.empty)
+    val elevatorState1 = ElevatorStateSnapshot(elevator1, Floor(1), Idle, Set.empty)
+    val elevatorState2 = ElevatorStateSnapshot(elevator2, Floor(4), Idle, Set.empty)
+    val elevatorState3 = ElevatorStateSnapshot(elevator3, Floor(5), Idle, Set.empty)
 
     When("algorithm calculates elevator to call")
     val direction = Up
@@ -81,7 +81,7 @@ class ElevatorCallAlgorithmTest extends AnyFlatSpecLike with GivenWhenThen with 
 
   it should "not pick elevator when requested floor is not in its range" in {
     Given("elevator elevator with min and max floor")
-    val elevatorSnapshot = ElevatorStateSnapshot(elevator1, Floor(3), Inactive, Set.empty)
+    val elevatorSnapshot = ElevatorStateSnapshot(elevator1, Floor(3), Idle, Set.empty)
 
     When("algorithm calculates elevator to call")
     val elevatorStates = List(elevatorSnapshot)

@@ -1,6 +1,6 @@
 package com.avsystem.elevatorsystem.simulation
 
-import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId, ElevatorStateSnapshot, Floor, GoingUp, Inactive}
+import com.avsystem.elevatorsystem.Entities.{Elevator, ElevatorId, ElevatorStateSnapshot, Floor, GoingUp, Idle}
 import org.scalatest.GivenWhenThen
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
@@ -13,7 +13,7 @@ class SimulationUpdaterTest extends AnyFlatSpecLike with GivenWhenThen {
     val maxFloor = Floor(10)
     val defaultFloor = Floor(3)
     val elevator = Elevator(ElevatorId(1), defaultFloor, minFloor, maxFloor)
-    val state = new ElevatorState(maxFloor, Inactive, Set(maxFloor + 1))
+    val state = new ElevatorState(maxFloor, Idle, Set(maxFloor + 1))
     val elevatorSimulation = ElevatorSimulation(elevator, state)
     val simulationState = SimulationState(List(elevatorSimulation.elevator.id -> elevatorSimulation).toMap)
 
@@ -21,7 +21,7 @@ class SimulationUpdaterTest extends AnyFlatSpecLike with GivenWhenThen {
     SimulationUpdater.performSimulationStep(simulationState)
 
     Then("elevator should be directed to its default floor")
-    state.movement shouldBe Inactive
+    state.movement shouldBe Idle
     state.floor shouldBe maxFloor
     state.floorsToVisit shouldBe Set(defaultFloor)
   }
@@ -32,7 +32,7 @@ class SimulationUpdaterTest extends AnyFlatSpecLike with GivenWhenThen {
     val maxFloor = Floor(10)
     val defaultFloor = Floor(3)
     val elevator = Elevator(ElevatorId(1), defaultFloor, minFloor, maxFloor)
-    val state = new ElevatorState(minFloor, Inactive, Set(minFloor - 1))
+    val state = new ElevatorState(minFloor, Idle, Set(minFloor - 1))
     val elevatorSimulation = ElevatorSimulation(elevator, state)
     val simulationState = SimulationState(List(elevatorSimulation.elevator.id -> elevatorSimulation).toMap)
 
@@ -40,7 +40,7 @@ class SimulationUpdaterTest extends AnyFlatSpecLike with GivenWhenThen {
     SimulationUpdater.performSimulationStep(simulationState)
 
     Then("elevator should be directed to its default floor")
-    state.movement shouldBe Inactive
+    state.movement shouldBe Idle
     state.floor shouldBe minFloor
     state.floorsToVisit shouldBe Set(defaultFloor)
   }

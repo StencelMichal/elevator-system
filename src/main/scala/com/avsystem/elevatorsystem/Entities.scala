@@ -14,20 +14,19 @@ object Entities {
       floor: Floor,
       movement: Movement,
       floorsToVisit: Set[Floor]
-  ){
+  ) {
 
     def lastFloorInCurrentDirection: Option[Floor] = movement match {
-      case GoingUp => floorsToVisit.maxOption
+      case GoingUp   => floorsToVisit.maxOption
       case GoingDown => floorsToVisit.minOption
-      case Inactive => None
+      case Idle      => None
     }
 
     def lastFloorInOppositeDirection: Option[Floor] = movement match {
-      case GoingUp => floorsToVisit.minOption
+      case GoingUp   => floorsToVisit.minOption
       case GoingDown => floorsToVisit.maxOption
-      case Inactive => None
+      case Idle      => None
     }
-
 
   }
 
@@ -48,11 +47,6 @@ object Entities {
   }
 
   sealed trait Movement {
-    def swap: Movement = this match {
-      case GoingUp   => GoingDown
-      case GoingDown => GoingUp
-      case Inactive  => Inactive
-    }
   }
   object Movement {
     def fromDirection(direction: Direction): Movement = direction match {
@@ -62,7 +56,7 @@ object Entities {
   }
   case object GoingUp   extends Movement
   case object GoingDown extends Movement
-  case object Inactive  extends Movement
+  case object Idle      extends Movement
 
   sealed trait Direction
   object Direction {

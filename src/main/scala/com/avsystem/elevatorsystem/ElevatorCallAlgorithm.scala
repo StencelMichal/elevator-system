@@ -17,7 +17,7 @@ object ElevatorCallAlgorithm {
   private def distanceToCaller(requestedFloor: Floor, requestedDirection: Direction, elevatorState: ElevatorStateSnapshot): Int = {
     val sameDirection = isSameDirection(requestedDirection, elevatorState.movement)
     val beforeCaller  = isBeforeCaller(sameDirection, requestedDirection, requestedFloor, elevatorState.floor)
-    if (elevatorState.movement == Inactive || beforeCaller) {
+    if (elevatorState.movement == Idle || beforeCaller) {
       elevatorState.floor.distance(requestedFloor)
     } else if (!sameDirection)
       distanceForElevatorInOppositeDirection(elevatorState, requestedFloor)
