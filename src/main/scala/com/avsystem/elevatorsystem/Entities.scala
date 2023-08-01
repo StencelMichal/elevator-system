@@ -14,7 +14,22 @@ object Entities {
       floor: Floor,
       movement: Movement,
       floorsToVisit: Set[Floor]
-  )
+  ){
+
+    def lastFloorInCurrentDirection: Option[Floor] = movement match {
+      case GoingUp => floorsToVisit.maxOption
+      case GoingDown => floorsToVisit.minOption
+      case Inactive => None
+    }
+
+    def lastFloorInOppositeDirection: Option[Floor] = movement match {
+      case GoingUp => floorsToVisit.minOption
+      case GoingDown => floorsToVisit.maxOption
+      case Inactive => None
+    }
+
+
+  }
 
   case class ElevatorId(id: Int) extends AnyVal
 

@@ -16,7 +16,16 @@ object HelpPrinter extends CommandLinePrinter {
   private def appendCommandHelp(sb: StringBuilder, command: Command): Unit = {
     sb.append(line(withIndent(1, withBulletPoint(withModifiers(s"${command.name}:", GREEN, BOLD)))))
     sb.append(line(withIndent(4, s"${withModifiers(s"description:", GREEN)} ${command.description}")))
+    appendParametersDescriptions(sb, command.parametersDescriptions)
     sb.append(line(withIndent(4, s"${withModifiers(s"example:", GREEN)} `${command.example}`")))
+  }
+
+  private def appendParametersDescriptions(sb: StringBuilder, parametersDescriptions: List[String]): Unit = {
+    if (parametersDescriptions.nonEmpty)
+      sb.append(line(withIndent(4, withModifiers(s"parameters:", GREEN))))
+    parametersDescriptions.zipWithIndex.foreach { case (description, id) =>
+      sb.append(line(withIndent(6, withBulletPoint(s"[${id + 1}] $description"))))
+    }
   }
 
 }

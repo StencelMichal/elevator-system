@@ -23,6 +23,10 @@ object CommandLineOperations {
     }
     override val name: String        = "pickup"
     override val description: String = "Calls an elevator to a specific floor with the intention of traveling in a particular direction"
+    override val parametersDescriptions: List[String] = List(
+      "floor number",
+      "elevator direction, possible values are `up` or `down`"
+    )
     override val example: String     = "pickup 3 down"
   }
 
@@ -30,11 +34,12 @@ object CommandLineOperations {
   private val performStepRegex = """\s*step\s*""".r
 
   case object PerformStepCommand extends Command with CallbackOperation[PerformStepRequest.type, PerformStepResponse.type] {
-    override val regex: Regex                               = performStepRegex
+    override val regex: Regex = performStepRegex
     override val callback: PerformStepResponse.type => Unit = _ => SystemMessagePrinter.printSystemMessage("Simulation step performed")
-    override val name: String                               = "step"
-    override val description: String                        = "Performs simulation step"
-    override val example: String                            = "step"
+    override val name: String = "step"
+    override val description: String = "Performs simulation step"
+    override val parametersDescriptions: List[String] = List.empty
+    override val example: String = "step"
   }
 
   // matches `status`
@@ -45,6 +50,7 @@ object CommandLineOperations {
     override val callback: GetStatusResponse => Unit = response => StatusPrinter.printSimulationStatus(response.elevators)
     override val name: String                        = "status"
     override val description: String                 = "Show status of current simulation"
+    override val parametersDescriptions: List[String] = List.empty
     override val example: String                     = "status"
   }
 
@@ -59,6 +65,11 @@ object CommandLineOperations {
     }
     override val name: String        = "update"
     override val description: String = "Updates elevator state of given id"
+    override val parametersDescriptions: List[String] = List(
+      "elevatorId",
+      "the floor to which the elevator state should be changed",
+      "whitespace-separated array of floor numbers in square brackets - list of floors to which the elevator should go next"
+    )
     override val example: String     = "update 3 1 [4 5]"
   }
 
@@ -67,11 +78,12 @@ object CommandLineOperations {
   case object HelpCommand extends Command {
     override val regex: Regex = helpCommandRegex
     def showHelp(): Unit = {
-      val commands = List(PickupElevatorCommand, PerformStepCommand, GetStatusCommand, HelpCommand)
+      val commands = List(PickupElevatorCommand, PerformStepCommand, GetStatusCommand, UpdateStateCommand, HelpCommand)
       HelpPrinter.printHelp(commands)
     }
     override val name: String        = "help"
     override val description: String = "Prints help with all possible commands"
+    override val parametersDescriptions: List[String] = List.empty
     override val example: String     = "help"
   }
 
@@ -79,6 +91,7 @@ object CommandLineOperations {
     def regex: Regex
     def name: String
     def description: String
+    def parametersDescriptions: List[String]
     def example: String
   }
 

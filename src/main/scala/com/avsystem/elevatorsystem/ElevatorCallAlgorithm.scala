@@ -14,18 +14,58 @@ object ElevatorCallAlgorithm {
     optElevatorId.map(_.elevator.id)
   }
 
-  private def distanceToCaller(requestedFloor: Floor, requestedDirection: Direction, elevatorState: ElevatorStateSnapshot): Int =
-    elevatorState.movement match {
-      case Inactive =>
+  private def distanceToCaller(requestedFloor: Floor, requestedDirection: Direction, elevatorState: ElevatorStateSnapshot): Int = {
+    val sameDirection = isSameDirection(requestedDirection, elevatorState.movement)
+    val beforeCaller  = isBeforeCaller(sameDirection, requestedDirection, requestedFloor, elevatorState.floor)
+    if (elevatorState.movement == Inactive || beforeCaller) {
+      elevatorState.floor.distance(requestedFloor)
+    } else if (!sameDirection)
+      distanceForElevatorInOppositeDirection(elevatorState, requestedFloor)
+    else
+      distanceForElevatorInSameDirectionWhichPassedCaller(elevatorState, requestedFloor)
+  }
+
+  private def distanceForElevatorInOppositeDirection(elevatorState: ElevatorStateSnapshot, requestedFloor: Floor) = {
+    val lastFloorInDirection = elevatorState.lastFloorInCurrentDirection
+    lastFloorInDirection match {
+      case Some(lastFloor) =>
+        elevatorState.floor.distance(lastFloor) +
+          lastFloor.distance(requestedFloor)
+      case None =>
         elevatorState.floor.distance(requestedFloor)
-      case GoingUp if requestedDirection == Up && elevatorState.floor.<=(requestedFloor) =>
-        elevatorState.floor.distance(requestedFloor)
-      case GoingUp =>
-        elevatorState.floorsToVisit.max.distance(requestedFloor)
-      case GoingDown if requestedDirection == Down && elevatorState.floor.>=(requestedFloor) =>
-        elevatorState.floor.distance(requestedFloor)
-      case GoingDown =>
-        elevatorState.floorsToVisit.min.distance(requestedFloor)
     }
+  }
+
+  private def distanceForElevatorInSameDirectionWhichPassedCaller(elevatorState: ElevatorStateSnapshot, requestedFloor: Floor) = {
+    val lastFloorInDirection = elevatorState.lastFloorInCurrentDirection
+    lastFloorInDirection match {
+      case Some(lastFloor) =>
+        val lastFloorInOppositeDirection = elevatorState.lastFloorInOppositeDirection.get
+        elevatorState.floor.distance(lastFloor) +
+          lastFloor.distance(lastFloorInOppositeDirection) +
+          lastFloorInOppositeDirection.distance(requestedFloor)
+      case None =>
+        elevatorState.floor.distance(requestedFloor)
+    }
+  }
+
+  private def isSameDirection(requestedDirection: Direction, elevatorMovement: Movement) =
+    (requestedDirection, elevatorMovement) match {
+      case (Up, GoingUp)     => true
+      case (Down, GoingDown) => true
+      case _                 => false
+    }
+
+  private def isBeforeCaller(
+      isSameDirection: Boolean,
+      requestedDirection: Direction,
+      requestedFloor: Floor,
+      elevatorFloor: Floor
+  ): Boolean = {
+    isSameDirection && (requestedDirection match {
+      case Up   => requestedFloor >= elevatorFloor
+      case Down => requestedFloor <= elevatorFloor
+    })
+  }
 
 }
