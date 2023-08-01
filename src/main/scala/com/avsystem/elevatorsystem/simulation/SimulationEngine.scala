@@ -2,7 +2,7 @@ package com.avsystem.elevatorsystem.simulation
 
 import com.avsystem.elevatorsystem.Entities._
 
-class SimulationEngine (simulationState: SimulationState){
+class SimulationEngine(simulationState: SimulationState) {
 
   def fetchSimulationSnapshot: List[ElevatorStateSnapshot] =
     simulationState.elevatorSimulationsById.values.map(_.toElevatorStateSnapshot).toList
@@ -10,7 +10,7 @@ class SimulationEngine (simulationState: SimulationState){
   def performSimulationStep(): Unit =
     SimulationUpdater.performSimulationStep(simulationState)
 
-  def assignTaskToElevator(elevatorId: ElevatorId, requestedFloor:Floor): Unit = {
+  def assignTaskToElevator(elevatorId: ElevatorId, requestedFloor: Floor): Unit = {
     simulationState.elevatorSimulationsById(elevatorId).state.floorsToVisit += requestedFloor
   }
 
@@ -22,5 +22,3 @@ class SimulationEngine (simulationState: SimulationState){
   }
 
 }
-
-

@@ -13,7 +13,7 @@ object HelpPrinter extends CommandLinePrinter {
     println(sb.toString())
   }
 
-  private def appendCommandHelp(sb:StringBuilder, command:Command): Unit = {
+  private def appendCommandHelp(sb: StringBuilder, command: Command): Unit = {
     sb.append(line(withIndent(1, withBulletPoint(withModifiers(s"${command.name}:", GREEN, BOLD)))))
     sb.append(line(withIndent(4, s"${withModifiers(s"description:", GREEN)} ${command.description}")))
     sb.append(line(withIndent(4, s"${withModifiers(s"example:", GREEN)} `${command.example}`")))

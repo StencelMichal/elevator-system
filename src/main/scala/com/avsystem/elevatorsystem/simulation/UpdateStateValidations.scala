@@ -26,5 +26,4 @@ private[simulation] object UpdateStateValidations extends Logging {
     }
   }
 
-
 }

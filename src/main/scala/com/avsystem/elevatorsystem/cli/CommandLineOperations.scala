@@ -17,7 +17,7 @@ object CommandLineOperations {
     override val callback: ElevatorPickupResponse => Unit = response => {
       val message = response.elevatorId match {
         case Some(elevatorId) => s"Elevator: ${elevatorId.id} called"
-        case None => "No elevator is able to handle pickup request"
+        case None             => "No elevator is able to handle pickup request"
       }
       SystemMessagePrinter.printSystemMessage(message)
     }
@@ -57,11 +57,10 @@ object CommandLineOperations {
       SystemMessagePrinter.printSystemMessage("Elevator state was changed successfully")
       StatusPrinter.printElevatorStatus(response.elevatorStateSnapshot)
     }
-    override val name: String = "update"
+    override val name: String        = "update"
     override val description: String = "Updates elevator state of given id"
-    override val example: String = "update 3 1 [4 5]"
+    override val example: String     = "update 3 1 [4 5]"
   }
-
 
   private val helpCommandRegex = """\s*help\s*""".r
 
@@ -75,7 +74,6 @@ object CommandLineOperations {
     override val description: String = "Prints help with all possible commands"
     override val example: String     = "help"
   }
-
 
   sealed trait Command {
     def regex: Regex

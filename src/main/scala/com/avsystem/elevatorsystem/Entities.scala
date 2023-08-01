@@ -5,8 +5,8 @@ import scala.math.abs
 
 object Entities {
 
-  case class Elevator(id: ElevatorId, defaultFloor: Floor, minFloor: Floor, maxFloor: Floor){
-    def hasFloorInRange(floor:Floor): Boolean = minFloor <= floor && floor <= maxFloor
+  case class Elevator(id: ElevatorId, defaultFloor: Floor, minFloor: Floor, maxFloor: Floor) {
+    def hasFloorInRange(floor: Floor): Boolean = minFloor <= floor && floor <= maxFloor
   }
 
   case class ElevatorStateSnapshot(
@@ -20,15 +20,15 @@ object Entities {
 
   case class Floor(floorNumber: Int) extends AnyVal {
     def getDirectionTo(nextFloor: Floor): Direction = if (nextFloor.floorNumber > floorNumber) Up else Down
-    def distance(other: Floor): Int = abs(floorNumber - other.floorNumber)
-    def >(other: Floor): Boolean = floorNumber > other.floorNumber
-    def >=(other: Floor): Boolean = floorNumber >= other.floorNumber
-    def <(other: Floor): Boolean = floorNumber < other.floorNumber
-    def <=(other: Floor): Boolean = floorNumber <= other.floorNumber
-    def + (numberOfFloors:Int):Floor = Floor(floorNumber + numberOfFloors)
-    def - (numberOfFloors:Int):Floor = Floor(floorNumber - numberOfFloors)
+    def distance(other: Floor): Int                 = abs(floorNumber - other.floorNumber)
+    def >(other: Floor): Boolean                    = floorNumber > other.floorNumber
+    def >=(other: Floor): Boolean                   = floorNumber >= other.floorNumber
+    def <(other: Floor): Boolean                    = floorNumber < other.floorNumber
+    def <=(other: Floor): Boolean                   = floorNumber <= other.floorNumber
+    def +(numberOfFloors: Int): Floor               = Floor(floorNumber + numberOfFloors)
+    def -(numberOfFloors: Int): Floor               = Floor(floorNumber - numberOfFloors)
   }
-  object Floor{
+  object Floor {
     implicit val ordering: Ordering[Floor] = Ordering.fromLessThan((f1, f2) => f1.<(f2))
   }
 

@@ -14,7 +14,13 @@ object ConfigurationParser {
   }
 
   case class AppConfig(elevatorsConfig: ElevatorsConfig)
-  case class ElevatorsConfig(elevatorsAmount: Int, defaultSpecification: ElevatorSpecification, elevatorsSpecifications: List[ElevatorSpecification])
+
+  case class ElevatorsConfig(
+      elevatorsAmount: Int,
+      defaultSpecification: ElevatorSpecification,
+      elevatorsSpecifications: List[ElevatorSpecification]
+  )
+
   case class ElevatorSpecification(defaultFloor: Int, minFloor: Floor, maxFloor: Floor)
 
   private def parse: AppConfig = {

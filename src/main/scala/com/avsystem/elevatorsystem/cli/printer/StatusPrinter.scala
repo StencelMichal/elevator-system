@@ -9,7 +9,7 @@ object StatusPrinter extends CommandLinePrinter {
   def printSimulationStatus(elevatorSnapshots: List[ElevatorStateSnapshot]): Unit = {
     val sb = new StringBuilder()
     sb.append(separator)
-    elevatorSnapshots.foreach{elevator =>
+    elevatorSnapshots.foreach { elevator =>
       appendElevatorStatus(sb, elevator)
       sb.append(separator)
     }

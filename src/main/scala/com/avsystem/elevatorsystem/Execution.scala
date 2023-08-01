@@ -11,5 +11,4 @@ object Execution {
     ExecutionContext.fromExecutor(Executors.newFixedThreadPool(numberOfThreads))
   }
 
-
 }

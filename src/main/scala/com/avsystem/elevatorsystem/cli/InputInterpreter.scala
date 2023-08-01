@@ -21,10 +21,7 @@ object InputInterpreter extends Logging {
       Try(input match {
         case PickupElevatorCommand.regex(floorNumber, direction) =>
           PickupElevatorCommand.performOperation(
-            ElevatorPickupRequest(
-              floor = Floor(floorNumber.toInt),
-              direction = Direction.fromString(direction.toLowerCase.capitalize)
-            )
+            ElevatorPickupRequest(Floor(floorNumber.toInt), Direction.fromString(direction.toLowerCase.capitalize))
           )
         case PerformStepCommand.regex() =>
           PerformStepCommand.performOperation(PerformStepRequest)
@@ -33,9 +30,9 @@ object InputInterpreter extends Logging {
         case UpdateStateCommand.regex(elevatorId, newFloor, newFloorsToVisit) =>
           UpdateStateCommand.performOperation(
             UpdateStateRequest(
-              elevatorId = ElevatorId(elevatorId.toInt),
-              newFloor = Floor(newFloor.toInt),
-              newFloorsToVisit = newFloorsToVisit.split("\\s+").map(floorNumber => Floor(floorNumber.toInt)).toSet
+              ElevatorId(elevatorId.toInt),
+              Floor(newFloor.toInt),
+              newFloorsToVisit.split("\\s+").map(floorNumber => Floor(floorNumber.toInt)).toSet
             )
           )
         case HelpCommand.regex() =>
